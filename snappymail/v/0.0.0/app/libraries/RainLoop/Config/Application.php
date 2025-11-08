@@ -196,6 +196,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'message_read_delay'          => array(5, 'Mark message read after N seconds'),
 
 				'min_refresh_interval'        => array(5, 'Minimal check for new messages interval in minutes'),
+			'default_refresh_interval'    => array(15, 'Default check for new messages interval in minutes'),
 
 				'attachment_size_limit'       => array(\min($upload_max_filesize, 25), 'File size limit (MB) for file upload on compose screen
 0 for unlimited.'),

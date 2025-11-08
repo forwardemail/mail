@@ -203,6 +203,7 @@ trait Accounts
 	{
 		$oConfig = $this->Config();
 		$minRefreshInterval = (int) $oConfig->Get('webmail', 'min_refresh_interval', 5);
+		$defaultRefreshInterval = (int) $oConfig->Get('webmail', 'default_refresh_interval', 15);
 		$aResult = [
 //			'Email' => IDN::emailToUtf8($oAccount->Email()),
 			'Email' => $oAccount->Email(),
@@ -217,7 +218,7 @@ trait Accounts
 			'HideDeleted' => true,
 			'ShowUnreadCount' => false,
 			'UnhideKolabFolders' => false,
-			'CheckMailInterval' => \max(15, $minRefreshInterval)
+			'CheckMailInterval' => \max($defaultRefreshInterval, $minRefreshInterval)
 		];
 		$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
 		if ($oSettingsLocal instanceof \RainLoop\Settings) {
