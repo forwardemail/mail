@@ -616,7 +616,7 @@ export class MessageModel extends AbstractModel {
 		const privateKeys = OpenPGPUserStore.privateKeys();
 		for (const key of privateKeys) {
 			if (Passphrases.has(key)) {
-				return true; // We can auto-decrypt!
+				return true;
 			}
 		}
 
@@ -634,8 +634,15 @@ export class MessageModel extends AbstractModel {
 	async decrypt(auto = false) {
 		const msg = this;
 
+		const isPgpEncrypted = typeof msg.pgpEncrypted === 'function'
+			? msg.pgpEncrypted()
+			: msg.pgpEncrypted;
+		const isGenericEncrypted = typeof msg.encrypted === 'function'
+			? msg.encrypted()
+			: msg.encrypted;
+
 		// Try auto-decrypt if requested and enabled
-		if (auto && msg.pgpEncrypted() && !msg.pgpDecrypted()) {
+		if (auto && (isPgpEncrypted || isGenericEncrypted) && !msg.pgpDecrypted()) {
 			const canAutoDecrypt = await this.canAutoDecryptPGP();
 			if (canAutoDecrypt) {
 				try {

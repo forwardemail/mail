@@ -675,6 +675,7 @@ class Actions
 					$aResult['requireTLS'] = (bool) $oSettings->GetConf('requireTLS', false);
 					$aResult['pgpSign'] = (bool) $oSettings->GetConf('pgpSign', false);
 					$aResult['pgpEncrypt'] = (bool) $oSettings->GetConf('pgpEncrypt', false);
+					$aResult['autoDecryptPGP'] = (bool) $oSettings->GetConf('autoDecryptPGP', true);
 					$aResult['allowSpellcheck'] = (bool) $oSettings->GetConf('allowSpellcheck', $aResult['allowSpellcheck']);
 //					$aResult['allowCtrlEnterOnCompose'] = (bool) $oSettings->GetConf('allowCtrlEnterOnCompose', true);
 

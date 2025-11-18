@@ -289,11 +289,25 @@ setLayoutResizer = (source, sClientSideKeyName, mode) =>
 	}
 },
 
-viewMessage = (oMessage, popup) => {
+viewMessage = async (oMessage, popup) => {
 	if (popup) {
 		oMessage.popupMessage();
 	} else {
 		MessageUserStore.error('');
+
+		// Auto-decrypt PGP messages BEFORE creating the body element to avoid button flicker
+		const pgpEncrypted = oMessage.pgpEncrypted?.();
+		const genericEncrypted = oMessage.encrypted?.();
+		if ((pgpEncrypted || genericEncrypted)
+			&& !oMessage.pgpDecrypted?.()
+			&& SettingsUserStore.autoDecryptPGP()) {
+			try {
+				await oMessage.decrypt(true);
+			} catch (e) {
+				// Silently fail, user can manually decrypt
+			}
+		}
+
 		let id = 'rl-msg-' + oMessage.hash,
 			body = oMessage.body || elementById(id);
 		if (!body) {
