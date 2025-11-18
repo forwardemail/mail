@@ -173,6 +173,7 @@ trait User
 		$this->setSettingsFromParams($oSettings, 'requireTLS', 'bool');
 		$this->setSettingsFromParams($oSettings, 'pgpSign', 'bool');
 		$this->setSettingsFromParams($oSettings, 'pgpEncrypt', 'bool');
+		$this->setSettingsFromParams($oSettings, 'autoDecryptPGP', 'bool');
 		$this->setSettingsFromParams($oSettings, 'allowSpellcheck', 'bool');
 
 		$this->setSettingsFromParams($oSettings, 'ViewHTML', 'bool');

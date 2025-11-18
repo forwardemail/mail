@@ -300,6 +300,8 @@
 		"SIGN": "Sign",
 		"ENCRYPT": "Encrypt",
 		"DECRYPT": "Decrypt",
+		"AUTO_DECRYPT": "Auto-decrypt messages",
+		"AUTO_DECRYPT_HELP": "After unlocking your PGP key once, automatically decrypt all encrypted messages in this session",
 		"VERIFY": "Verify",
 		"GOOD_SIGNATURE": "Good signature from %USER%",
 		"ERROR": "%TYPE% error: %ERROR%",

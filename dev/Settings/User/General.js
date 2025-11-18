@@ -102,7 +102,7 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 		 'layout', 'messageReadDelay', 'messagesPerPage', 'checkMailInterval',
 		 'editorDefaultType', 'editorWysiwyg', 'msgDefaultAction', 'maxBlockquotesLevel',
 		 // These are in addSettings()
-		 'requestReadReceipt', 'requestDsn', 'requireTLS', 'pgpSign', 'pgpEncrypt',
+		 'requestReadReceipt', 'requestDsn', 'requireTLS', 'pgpSign', 'pgpEncrypt', 'autoDecryptPGP',
 		 'viewHTML', 'viewImages', 'viewImagesWhitelist', 'removeColors', 'allowStyles', 'allowDraftAutosave',
 		 'hideDeleted', 'listInlineAttachments', 'simpleAttachmentsList', 'collapseBlockquotes',
 		 'useCheckboxesInList', 'listGrouped', 'replySameFolder', 'allowSpellcheck',
