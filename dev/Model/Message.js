@@ -602,8 +602,54 @@ export class MessageModel extends AbstractModel {
 		return result.html || plainToHtml(this.plain());
 	}
 
-	async decrypt() {
+	async canAutoDecryptPGP() {
+		// Check if user has enabled auto-decrypt preference
+		if (!SettingsUserStore.autoDecryptPGP() || !Passphrases.isAutoDecryptEnabled()) {
+			return false;
+		}
+
+		// Check if we have a cached passphrase for any private key
+		const { OpenPGPUserStore } = await import('Stores/User/OpenPGP');
+		const { GnuPGUserStore } = await import('Stores/User/GnuPG');
+
+		// Check OpenPGP.js keys
+		const privateKeys = OpenPGPUserStore.privateKeys();
+		for (const key of privateKeys) {
+			if (Passphrases.has(key)) {
+				return true; // We can auto-decrypt!
+			}
+		}
+
+		// Check GnuPG keys
+		const gnupgKeys = GnuPGUserStore.privateKeys;
+		for (const key of gnupgKeys) {
+			if (Passphrases.has(key)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	async decrypt(auto = false) {
 		const msg = this;
+
+		// Try auto-decrypt if requested and enabled
+		if (auto && msg.pgpEncrypted() && !msg.pgpDecrypted()) {
+			const canAutoDecrypt = await this.canAutoDecryptPGP();
+			if (canAutoDecrypt) {
+				try {
+					await msg.pgpDecrypt();
+					return msg.pgpDecrypted();
+				} catch (e) {
+					// Silently fail auto-decrypt, don't show errors to user
+					console.log('Auto-decrypt failed:', e.message);
+					return false;
+				}
+			}
+		}
+
+		// Manual decrypt (existing behavior)
 		if (msg.pgpEncrypted() && !msg.pgpDecrypted()) {
 			return await msg.pgpDecrypt().then(()=>msg.pgpDecrypted());
 		}

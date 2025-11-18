@@ -26,6 +26,16 @@ export const MessageUserStore = new class {
 				elementById('rl-right').classList.toggle('message-selected', !!message);
 				if (message) {
 					SettingsUserStore.usePreviewPane() || AppUserStore.focusedState(ScopeMessageView);
+
+					// Attempt auto-decrypt if message is PGP encrypted and auto-decrypt is enabled
+					if (message.pgpEncrypted() && !message.pgpDecrypted() && SettingsUserStore.autoDecryptPGP()) {
+						// Use setTimeout to avoid blocking the UI
+						setTimeout(() => {
+							message.decrypt(true).catch(e => {
+								console.log('Auto-decrypt attempt failed:', e);
+							});
+						}, 100);
+					}
 				} else {
 					AppUserStore.focusedState(ScopeMessageList);
 					exitFullscreen();

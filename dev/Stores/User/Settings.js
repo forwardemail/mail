@@ -47,6 +47,7 @@ export const SettingsUserStore = new class {
 			requireTLS: 0,
 			pgpSign: 0,
 			pgpEncrypt: 0,
+			autoDecryptPGP: 0,
 			allowSpellcheck: 0,
 
 			layout: 1,
@@ -117,6 +118,7 @@ export const SettingsUserStore = new class {
 			'requireTLS',
 			'pgpSign',
 			'pgpEncrypt',
+			'autoDecryptPGP',
 			'allowSpellcheck',
 			'markdown'
 /*
