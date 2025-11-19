@@ -604,7 +604,7 @@ export class MessageModel extends AbstractModel {
 
 	async canAutoDecryptPGP() {
 		// Check if user has enabled auto-decrypt preference
-		if (!SettingsUserStore.autoDecryptPGP() || !Passphrases.isAutoDecryptEnabled()) {
+		if (!SettingsUserStore.autoDecryptPGP()) {
 			return false;
 		}
 
