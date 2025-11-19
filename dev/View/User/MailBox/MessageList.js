@@ -705,8 +705,8 @@ export class MailMessageList extends AbstractViewRight {
 			}
 		});
 
-		// archive (zip)
-		registerShortcut('z', '', [ScopeMessageList, ScopeMessageView], () => {
+		// archive (Thunderbird: 'a')
+		registerShortcut('a', '', [ScopeMessageList, ScopeMessageView], () => {
 			this.archiveCommand();
 			return false;
 		});
@@ -734,14 +734,19 @@ export class MailMessageList extends AbstractViewRight {
 			return false;
 		});
 
-		// write/compose (open compose popup)
+		// write/compose (open compose popup) - Thunderbird: Cmd+M
+		registerShortcut('m', 'meta', [ScopeMessageList, ScopeMessageView], () => {
+			showMessageComposer();
+			return false;
+		});
+		// Also keep w,c for compatibility
 		registerShortcut('w,c,new', '', [ScopeMessageList, ScopeMessageView], () => {
 			showMessageComposer();
 			return false;
 		});
 
-		// important - star/flag messages
-		registerShortcut('i', '', [ScopeMessageList, ScopeMessageView], () => {
+		// important - star/flag messages (Thunderbird: 's')
+		registerShortcut('s', '', [ScopeMessageList, ScopeMessageView], () => {
 			const checked = MessagelistUserStore.listCheckedOrSelected();
 			if (checked.length) {
 				listAction(
@@ -767,6 +772,18 @@ export class MailMessageList extends AbstractViewRight {
 			return false;
 		});
 
+		// mark read/unread toggle (Thunderbird: 'm')
+		registerShortcut('m', '', [ScopeMessageList, ScopeMessageView], () => {
+			const checked = MessagelistUserStore.listCheckedOrSelected();
+			if (checked.length) {
+				// Toggle based on first message state
+				const allRead = checked.every(message => !message.isUnseen());
+				this.seenMessagesFast(!allRead);
+			}
+			return false;
+		});
+
+		// Also keep q/u for compatibility
 		// read
 		registerShortcut('q', '', [ScopeMessageList, ScopeMessageView], () => {
 			this.seenMessagesFast(true);
@@ -785,7 +802,12 @@ export class MailMessageList extends AbstractViewRight {
 		});
 
 		if (SettingsCapa('Search')) {
-			// search input focus
+			// Quick filter/search (Thunderbird: Cmd+F)
+			addShortcut('f', 'meta', [ScopeMessageList, ScopeMessageView], () => {
+				this.focusSearch(true);
+				return false;
+			});
+			// Also keep / for compatibility
 			addShortcut('/', '', [ScopeMessageList, ScopeMessageView], () => {
 				this.focusSearch(true);
 				return false;
@@ -822,7 +844,8 @@ export class MailMessageList extends AbstractViewRight {
 		addShortcut('arrowleft', 'meta', ScopeMessageView, ()=>false);
 		addShortcut('arrowright', 'meta', ScopeMessageView, ()=>false);
 
-		addShortcut('f', 'meta', ScopeMessageList, this.advancedSearchClick);
+		// Advanced search (Thunderbird: Cmd+Shift+F)
+		addShortcut('f', 'meta,shift', ScopeMessageList, this.advancedSearchClick);
 	}
 
 	advancedSearchClick() {

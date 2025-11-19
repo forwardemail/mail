@@ -462,8 +462,8 @@ export class MailMessageView extends AbstractViewRight {
 			return true;
 		});
 
-		// replyAll
-		registerShortcut('a', '', [ScopeMessageList, ScopeMessageView], () => {
+		// replyAll (Thunderbird: Cmd+Shift+R)
+		registerShortcut('r', 'meta,shift', [ScopeMessageList, ScopeMessageView], () => {
 			if (currentMessage()) {
 				this.replyAllCommand();
 				return false;
@@ -476,7 +476,14 @@ export class MailMessageView extends AbstractViewRight {
 			}
 		});
 
-		// forward
+		// forward (Thunderbird: Cmd+L)
+		registerShortcut('l', 'meta', [ScopeMessageList, ScopeMessageView], () => {
+			if (currentMessage()) {
+				this.forwardCommand();
+				return false;
+			}
+		});
+		// Also keep f for compatibility
 		registerShortcut('f,mailforward', '', [ScopeMessageList, ScopeMessageView], () => {
 			if (currentMessage()) {
 				this.forwardCommand();
@@ -513,6 +520,64 @@ export class MailMessageView extends AbstractViewRight {
 
 		addShortcut('arrowdown,arrowright', 'meta', [ScopeMessageList, ScopeMessageView], () => {
 			this.goDownCommand();
+			return false;
+		});
+
+		// Next unread message (Thunderbird: 'n')
+		registerShortcut('n', '', [ScopeMessageList, ScopeMessageView], () => {
+			const list = MessagelistUserStore();
+			const current = currentMessage();
+			const currentIndex = current ? list.indexOf(current) : -1;
+
+			// Find next unread message after current
+			for (let i = currentIndex + 1; i < list.length; i++) {
+				if (list[i].isUnseen()) {
+					fireEvent('mailbox.message.show', {
+						folder: list[i].folder,
+						uid: list[i].uid
+					});
+					return false;
+				}
+			}
+			// If not found after current, wrap to beginning
+			for (let i = 0; i < currentIndex; i++) {
+				if (list[i].isUnseen()) {
+					fireEvent('mailbox.message.show', {
+						folder: list[i].folder,
+						uid: list[i].uid
+					});
+					return false;
+				}
+			}
+			return false;
+		});
+
+		// Previous unread message (Thunderbird: 'p')
+		registerShortcut('p', '', [ScopeMessageList, ScopeMessageView], () => {
+			const list = MessagelistUserStore();
+			const current = currentMessage();
+			const currentIndex = current ? list.indexOf(current) : list.length;
+
+			// Find previous unread message before current
+			for (let i = currentIndex - 1; i >= 0; i--) {
+				if (list[i].isUnseen()) {
+					fireEvent('mailbox.message.show', {
+						folder: list[i].folder,
+						uid: list[i].uid
+					});
+					return false;
+				}
+			}
+			// If not found before current, wrap to end
+			for (let i = list.length - 1; i > currentIndex; i--) {
+				if (list[i].isUnseen()) {
+					fireEvent('mailbox.message.show', {
+						folder: list[i].folder,
+						uid: list[i].uid
+					});
+					return false;
+				}
+			}
 			return false;
 		});
 
